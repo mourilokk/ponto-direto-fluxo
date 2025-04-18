@@ -54,7 +54,7 @@ const Footer = () => {
           <div>
             <h3 className="font-bold text-lg mb-4">Categorias</h3>
             <ul className="space-y-2">
-              {['Biologia', 'Química', 'Física', 'Matemática', 'História', 'Geografia', 'Literatura', 'Português'].map((item) => (
+              {['Português', 'Direito Administrativo', 'Direito Constitucional', 'Direito do Trabalho', 'Direito Civil', 'Informática', 'Raciocínio Lógico'].map((item) => (
                 <li key={item}>
                   <Link to="#" className="text-gray-400 hover:text-white transition-colors">
                     {item}

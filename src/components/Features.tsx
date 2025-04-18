@@ -70,15 +70,12 @@ const Features = () => {
             </div>
             <div className="md:w-1/3 bg-white p-6 rounded-lg shadow-md">
               <div className="text-center mb-4">
-                <span className="text-4xl font-bold text-primary-500">Grátis</span>
+                <span className="text-4xl font-bold text-primary-500">Faça um teste</span>
                 <p className="text-sm text-gray-500 mt-1">para conteúdos básicos</p>
               </div>
               <button className="w-full bg-primary-500 hover:bg-primary-600 text-white font-medium py-3 px-4 rounded-md transition-colors">
                 Começar Agora
               </button>
-              <p className="text-xs text-center text-gray-500 mt-3">
-                Não é necessário cartão de crédito
-              </p>
             </div>
           </div>
         </div>
