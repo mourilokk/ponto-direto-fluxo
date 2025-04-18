@@ -48,52 +48,52 @@ const ContentCard = ({ title, description, image, category, readTime, commentsCo
 const ContentCards = () => {
   const contents = [
     {
-      title: "Introdução à Biologia Celular",
-      description: "Um resumo completo sobre os fundamentos da biologia celular, estruturas e funções dos componentes celulares.",
+      title: "RESUMO CONHECIMENTOS GERAIS - SEDUC-MT",
+      description: "Material completo abordando todos os tópicos de conhecimentos gerais do edital da SEDUC-MT, com foco nos pontos mais cobrados em provas anteriores.",
       image: "",
-      category: "Biologia",
-      readTime: "5 min",
-      commentsCount: 12
+      category: "Conhecimentos Gerais",
+      readTime: "12 min",
+      commentsCount: 8
     },
     {
-      title: "Principais Eventos da Segunda Guerra Mundial",
-      description: "Cronologia e análise dos eventos mais importantes que marcaram a Segunda Guerra Mundial, suas causas e consequências.",
+      title: "RESUMO DIREITO CONSTITUCIONAL - CNU 2",
+      description: "Resumo estratégico de Direito Constitucional para o Concurso Nacional Unificado, contemplando toda a teoria e jurisprudência atualizada do STF.",
       image: "",
-      category: "História",
-      readTime: "8 min",
-      commentsCount: 7
+      category: "Direito",
+      readTime: "15 min",
+      commentsCount: 14
     },
     {
-      title: "Equações de Segundo Grau Simplificadas",
-      description: "Método prático para resolver equações de segundo grau de forma simplificada com exemplos passo a passo.",
+      title: "RESUMO CONHECIMENTOS GERAIS SEE-PB",
+      description: "Prepare-se para a SEE-PB com este resumo que abrange todos os tópicos de conhecimentos gerais do edital, incluindo atualidades e legislação específica.",
       image: "",
-      category: "Matemática",
-      readTime: "6 min",
-      commentsCount: 15
+      category: "Conhecimentos Gerais",
+      readTime: "10 min",
+      commentsCount: 6
     },
     {
-      title: "Redação para ENEM: Estrutura e Dicas",
-      description: "Guia completo para estruturar sua redação do ENEM e conseguir uma pontuação máxima com dicas dos corretores.",
+      title: "RESUMO LÍNGUA PORTUGUESA - BANCA FGV",
+      description: "Material focado no estilo de cobrança da FGV em Língua Portuguesa, com questões comentadas e dicas para resolução de exercícios.",
       image: "",
       category: "Português",
-      readTime: "7 min",
-      commentsCount: 23
+      readTime: "8 min",
+      commentsCount: 21
     },
     {
-      title: "Termodinâmica: Leis e Aplicações",
-      description: "Estudo das leis da termodinâmica e suas aplicações práticas em sistemas físicos e no cotidiano.",
+      title: "RESUMO RACIOCÍNIO LÓGICO - CNU 2",
+      description: "Domine a matemática do CNU com este resumo que aborda todos os tópicos de raciocínio lógico, incluindo exercícios resolvidos passo a passo.",
       image: "",
-      category: "Física",
+      category: "Matemática",
+      readTime: "11 min",
+      commentsCount: 16
+    },
+    {
+      title: "RESUMO INFORMÁTICA - TRIBUNAIS",
+      description: "Material específico para concursos de Tribunais, cobrindo todo o conteúdo de informática com foco nas questões mais recentes.",
+      image: "",
+      category: "Informática",
       readTime: "9 min",
-      commentsCount: 5
-    },
-    {
-      title: "Mapa Mental: Química Orgânica",
-      description: "Mapa mental completo sobre os principais grupos funcionais e reações da química orgânica para facilitar a memorização.",
-      image: "",
-      category: "Química",
-      readTime: "4 min",
-      commentsCount: 19
+      commentsCount: 12
     }
   ];
 
