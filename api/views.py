@@ -22,10 +22,15 @@ class ProdutoViewSet(viewsets.ReadOnlyModelViewSet):
         queryset = Produto.objects.all()
         categoria = self.request.query_params.get('categoria', None)
         tag = self.request.query_params.get('tag', None)
+        destaque = self.request.query_params.get('destaque', None)
         
         if categoria:
             queryset = queryset.filter(categoria__slug=categoria)
         if tag:
             queryset = queryset.filter(tag=tag)
+        if destaque:
+            # Converte string 'true' para booleano
+            destaque_bool = destaque.lower() == 'true'
+            queryset = queryset.filter(destaque=destaque_bool)
             
         return queryset

@@ -1,5 +1,4 @@
 
-import { useState } from "react";
 import { useParams } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -7,34 +6,19 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Check, ShoppingCart, CreditCard } from "lucide-react";
 import { toast } from "sonner";
-
-interface ProductDetail {
-  id: number;
-  title: string;
-  price: number;
-  image: string;
-  tag: string;
-  description: string;
-  features: string[];
-}
+import { useQuery } from "@tanstack/react-query";
+import api from "@/services/api";
+import { ProdutoDetalhado } from "@/types/produto";
 
 const ProdutoDetalhe = () => {
   const { id } = useParams();
   
-  // Mock de dados do produto que seria carregado da API
-  // Na implementação real, você buscaria esses dados do backend Django
-  const [produto, setProduto] = useState<ProductDetail>({
-    id: parseInt(id || "1"),
-    title: "Resumo Isoladas Administração Financeira e Orçamentária – AFO",
-    price: 97.00,
-    image: "",
-    tag: "Regular",
-    description: "O Resumo da Matéria Isolada de Administração Financeira e Orçamentária aborda de forma direta e estratégica todos os pontos relevantes para concursos públicos. Material atualizado com as últimas legislações e questões comentadas.",
-    features: [
-      "Material Assertivo: Elaborado com as últimas novidades legislativas, jurisprudências e assuntos exigidos em provas.",
-      "Material Digital: Não se limite a sua mesa de estudos! Estude do seu jeito, em qualquer lugar e a qualquer hora.",
-      "Atualização por 12 meses: Durante 12 meses você terá acesso às atualizações sem gastar mais nenhum real."
-    ]
+  const { data: produto, isLoading, error } = useQuery({
+    queryKey: ['produto', id],
+    queryFn: async () => {
+      const response = await api.get(`/produtos/${id}/`);
+      return response.data as ProdutoDetalhado;
+    }
   });
 
   const comprarAgora = () => {
@@ -43,7 +27,9 @@ const ProdutoDetalhe = () => {
   };
 
   const adicionarAoCarrinho = () => {
-    toast.success(`${produto.title} adicionado ao carrinho`);
+    if (produto) {
+      toast.success(`${produto.titulo} adicionado ao carrinho`);
+    }
     // Implementação da lógica de adicionar ao carrinho
   };
 
@@ -52,12 +38,46 @@ const ProdutoDetalhe = () => {
     // Implementação da lógica de visualização da amostra
   };
 
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex flex-col">
+        <Navbar />
+        <div className="flex-grow flex items-center justify-center">
+          <p className="text-xl">Carregando detalhes do produto...</p>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
+
+  if (error || !produto) {
+    return (
+      <div className="min-h-screen flex flex-col">
+        <Navbar />
+        <div className="flex-grow flex items-center justify-center">
+          <div className="text-center">
+            <p className="text-xl text-red-500">Erro ao carregar o produto.</p>
+            <p className="mt-2">Produto não encontrado ou erro na comunicação com o servidor.</p>
+          </div>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
+
+  // Array de features para exibição
+  const features = [
+    "Material Assertivo: Elaborado com as últimas novidades legislativas, jurisprudências e assuntos exigidos em provas.",
+    "Material Digital: Não se limite a sua mesa de estudos! Estude do seu jeito, em qualquer lugar e a qualquer hora.",
+    "Atualização por 12 meses: Durante 12 meses você terá acesso às atualizações sem gastar mais nenhum real."
+  ];
+
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
       <main className="flex-grow mt-16">
         <div className="container px-4 py-8 md:px-6 md:py-12">
-          <h1 className="text-3xl font-bold mb-8">{produto.title}</h1>
+          <h1 className="text-3xl font-bold mb-8">{produto.titulo}</h1>
           
           {/* Banner promocional */}
           <div className="bg-green-400 p-6 rounded-lg mb-8 flex justify-between items-center">
@@ -74,15 +94,25 @@ const ProdutoDetalhe = () => {
             {/* Coluna da esquerda com imagem */}
             <div className="lg:col-span-1">
               <Card className="overflow-hidden">
-                <div className="aspect-[3/4] bg-gray-800 text-white flex flex-col items-center justify-center p-6">
-                  <div className="font-bold text-2xl mb-8">RESUMO</div>
-                  <div className="text-center text-lg">
-                    ADMINISTRAÇÃO FINANCEIRA E ORÇAMENTÁRIA (AFO)
+                {produto.imagem ? (
+                  <div className="aspect-[3/4] bg-gray-100">
+                    <img 
+                      src={`http://localhost:8000${produto.imagem}`}
+                      alt={produto.titulo}
+                      className="w-full h-full object-cover"
+                    />
                   </div>
-                  <div className="absolute bottom-4 left-4 bg-blue-500 text-white text-sm py-1 px-3 rounded-full">
-                    {produto.tag}
+                ) : (
+                  <div className="aspect-[3/4] bg-gray-800 text-white flex flex-col items-center justify-center p-6">
+                    <div className="font-bold text-2xl mb-8">RESUMO</div>
+                    <div className="text-center text-lg">
+                      {produto.categoria_nome.toUpperCase()}
+                    </div>
+                    <div className="absolute bottom-4 left-4 bg-blue-500 text-white text-sm py-1 px-3 rounded-full">
+                      {produto.tag}
+                    </div>
                   </div>
-                </div>
+                )}
               </Card>
             </div>
             
@@ -92,7 +122,7 @@ const ProdutoDetalhe = () => {
                 <CardContent className="p-6">
                   <h3 className="text-lg font-medium mb-6">Material Assertivo</h3>
                   <ul className="space-y-4">
-                    {produto.features.map((feature, index) => (
+                    {features.map((feature, index) => (
                       <li key={index} className="flex">
                         <Check className="h-6 w-6 text-green-500 shrink-0 mr-2" />
                         <span className="text-gray-700">{feature.split(": ")[1]}</span>
@@ -108,7 +138,7 @@ const ProdutoDetalhe = () => {
               <Card className="h-full">
                 <CardContent className="p-6 flex flex-col h-full">
                   <div className="text-3xl font-bold mb-4">
-                    R${produto.price.toFixed(2).replace('.', ',')}
+                    R${produto.preco.toFixed(2).replace('.', ',')}
                   </div>
                   
                   <div className="flex items-center space-x-4 mb-6">
@@ -156,11 +186,35 @@ const ProdutoDetalhe = () => {
           <div className="mt-12">
             <h2 className="text-2xl font-bold mb-4">Sobre o material</h2>
             <div className="bg-white p-6 rounded-lg border border-gray-200">
-              <p className="text-gray-700">{produto.description}</p>
+              <p className="text-gray-700">{produto.descricao}</p>
+              {produto.detalhes?.conteudo && (
+                <div className="mt-6">
+                  <h3 className="text-xl font-bold mb-2">Conteúdo</h3>
+                  <div className="text-gray-700" dangerouslySetInnerHTML={{ __html: produto.detalhes.conteudo }}></div>
+                </div>
+              )}
+              {produto.detalhes?.materiais_inclusos && (
+                <div className="mt-6">
+                  <h3 className="text-xl font-bold mb-2">Materiais Inclusos</h3>
+                  <div className="text-gray-700" dangerouslySetInnerHTML={{ __html: produto.detalhes.materiais_inclusos }}></div>
+                </div>
+              )}
+              {produto.detalhes?.objetivos && (
+                <div className="mt-6">
+                  <h3 className="text-xl font-bold mb-2">Objetivos</h3>
+                  <div className="text-gray-700" dangerouslySetInnerHTML={{ __html: produto.detalhes.objetivos }}></div>
+                </div>
+              )}
+              {produto.detalhes?.publico_alvo && (
+                <div className="mt-6">
+                  <h3 className="text-xl font-bold mb-2">Público Alvo</h3>
+                  <div className="text-gray-700" dangerouslySetInnerHTML={{ __html: produto.detalhes.publico_alvo }}></div>
+                </div>
+              )}
             </div>
           </div>
           
-          {/* Seção de produtos relacionados */}
+          {/* Seção de produtos relacionados (opcional) */}
           <div className="mt-12">
             <h2 className="text-2xl font-bold mb-4">Compre também:</h2>
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
