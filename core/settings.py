@@ -1,4 +1,3 @@
-
 """
 Django settings for core project.
 
@@ -56,8 +55,10 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+# Atualizado para incluir a porta 8080 do frontend
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
+    "http://localhost:8080",
 ]
 
 ROOT_URLCONF = 'core.urls'
