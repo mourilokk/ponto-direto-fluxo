@@ -113,7 +113,7 @@ const Resumos = () => {
                         <ShoppingCart size={18} className="mr-2" />
                         Adicionar ao carrinho
                       </Button>
-                      <Link to={`/produtos/${produto.id}`} className="w-full">
+                      <Link to={`/produtos/${produto.slug}`} className="w-full">
                         <Button 
                           variant="outline" 
                           className="w-full border-gray-300"

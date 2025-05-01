@@ -11,12 +11,13 @@ import api from "@/services/api";
 import { ProdutoDetalhado } from "@/types/produto";
 
 const ProdutoDetalhe = () => {
-  const { id } = useParams();
+  const { slug } = useParams();
   
   const { data: produto, isLoading, error } = useQuery({
-    queryKey: ['produto', id],
+    queryKey: ['produto', slug],
     queryFn: async () => {
-      const response = await api.get(`/produtos/${id}/`);
+      // Agora buscamos pelo slug em vez de ID
+      const response = await api.get(`/produtos/${slug}/`);
       return response.data as ProdutoDetalhado;
     }
   });

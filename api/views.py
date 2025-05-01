@@ -12,6 +12,7 @@ class CategoriaViewSet(viewsets.ReadOnlyModelViewSet):
 class ProdutoViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Produto.objects.all()
     permission_classes = [permissions.AllowAny]
+    lookup_field = 'slug'  # Usar slug em vez de ID
     
     def get_serializer_class(self):
         if self.action == 'retrieve':

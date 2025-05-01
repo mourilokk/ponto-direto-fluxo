@@ -99,7 +99,7 @@ const ContentCards = () => {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {produtos.map((produto) => (
-            <Link to={`/produtos/${produto.id}`} key={produto.id}>
+            <Link to={`/produtos/${produto.slug}`} key={produto.id}>
               <ContentCard produto={produto} />
             </Link>
           ))}
