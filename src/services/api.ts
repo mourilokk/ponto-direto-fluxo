@@ -1,5 +1,5 @@
-
 import axios from 'axios';
+
 
 const api = axios.create({
   // Ajustando a URL base para incluir o protocolo http://
