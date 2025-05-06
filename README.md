@@ -18,8 +18,11 @@ Você precisará abrir **duas abas do terminal** (CMD ou outro terminal de sua p
 
 ## Rodando o Front-end (React)
 Certifique-se que você esteja na pasta correspondente no seu prompt de comando (CMD). Por exemplo: se baixou o arquivo na pasta Downloads, seu caminho será algo como:
+
 C:/Users/Downloads
+
 Digite o comando: cd ponto-direto-fluxo
+
 C:/Users/Downloads/ponto-direto-fluxo
 
 1. Abra seu prompt de comando (CMD) e digite o comando: cd ponto-direto-fluxo
