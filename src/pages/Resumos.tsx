@@ -100,10 +100,10 @@ const Resumos = () => {
                   <h3 className="font-medium text-base mb-2 line-clamp-2">{produto.titulo}</h3>
                   <div className="mt-auto pt-4">
                     <div className="text-primary-600 font-bold text-xl mb-1">
-                      R${produto.preco.toFixed(2).replace('.', ',')}
+                      R${Number(produto.preco).toFixed(2).replace('.', ',')}
                     </div>
                     <div className="text-gray-500 text-sm mb-4">
-                      Em até {produto.parcelas}x de R$ {produto.preco_parcelado.toFixed(2).replace('.', ',')}
+                      Em até {produto.parcelas}x de R$ {Number(produto.preco_parcelado).toFixed(2).replace('.', ',')}
                     </div>
                     <div className="flex flex-col space-y-2">
                       <Button 

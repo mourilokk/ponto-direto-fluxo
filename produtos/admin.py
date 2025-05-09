@@ -1,7 +1,7 @@
-
 from django.contrib import admin
 from .models import Categoria, Produto, DetalhesProduto
 from django.utils.html import format_html
+from taggit.models import Tag
 
 class DetalhesProdutoInline(admin.StackedInline):
     model = DetalhesProduto
@@ -22,6 +22,7 @@ class ProdutoAdmin(admin.ModelAdmin):
     inlines = [DetalhesProdutoInline]
     list_editable = ('destaque', 'tag')
     
+    
     def exibir_imagem(self, obj):
         if obj.imagem:
             return format_html('<img src="{}" width="50" height="50" />', obj.imagem.url)
@@ -30,7 +31,7 @@ class ProdutoAdmin(admin.ModelAdmin):
 
     fieldsets = (
         ('Informações Básicas', {
-            'fields': ('titulo', 'slug', 'categoria', 'tag', 'destaque')
+            'fields': ('titulo', 'slug', 'categoria', 'tag', 'destaque', 'tags')
         }),
         ('Descrição', {
             'fields': ('descricao_curta', 'descricao')

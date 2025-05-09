@@ -33,18 +33,21 @@ const ContentCard = ({ produto }: ContentCardProps) => {
       <div className="p-5">
         <h3 className="text-lg font-bold mb-2 line-clamp-2">{produto.titulo}</h3>
         <p className="text-gray-600 mb-4 text-sm line-clamp-3">{produto.descricao_curta || produto.descricao}</p>
-        <div className="flex items-center justify-between text-xs text-gray-500">
-          <div className="flex items-center space-x-2">
-            <Clock size={14} />
-            <span>12 min</span>
-          </div>
-          <div className="flex items-center space-x-2">
-            <MessageSquare size={14} />
-            <span>10 comentários</span>
+          <div className="mt-4 space-y-2">
+            <button
+              className="w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-md transition-colors"
+              onClick={() => alert(`Produto ${produto.titulo} adicionado ao carrinho.`)}
+              >
+                Adicionar ao carrinho
+              </button>    
+              <Link to={`/produtos/${produto.slug}`}>
+                <button className="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium py-2 px-4 rounded-md transition-colors">
+                  Ver detalhes
+                </button>
+              </Link>      
           </div>
         </div>
       </div>
-    </div>
   );
 };
 

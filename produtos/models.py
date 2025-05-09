@@ -1,6 +1,7 @@
 
 from django.db import models
 from django.utils.text import slugify
+from taggit.managers import TaggableManager
 
 class Categoria(models.Model):
     nome = models.CharField(max_length=100)
@@ -23,6 +24,8 @@ class Produto(models.Model):
     TAGS_CHOICES = [
         ('Regular', 'Regular'),
         ('Pós-Edital', 'Pós-Edital'),
+        ('Pré-Edital', 'Pré-Edital'),
+        ('Curso', 'Curso'),
         ('Destaque', 'Destaque'),
         ('Novidade', 'Novidade'),
     ]
@@ -36,6 +39,7 @@ class Produto(models.Model):
     imagem = models.ImageField(upload_to='produtos/', blank=True, null=True)
     categoria = models.ForeignKey(Categoria, on_delete=models.CASCADE, related_name='produtos')
     tag = models.CharField(max_length=20, choices=TAGS_CHOICES, default='Regular')
+    tags = TaggableManager(blank=True)
     destaque = models.BooleanField(default=False)
     data_criacao = models.DateTimeField(auto_now_add=True)
     data_atualizacao = models.DateTimeField(auto_now=True)

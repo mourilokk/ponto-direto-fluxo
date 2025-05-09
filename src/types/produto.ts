@@ -11,12 +11,20 @@ export interface Produto {
   slug: string;
   descricao_curta: string;
   descricao: string;
-  preco: number;
+  preco: number | string;
+  detalhes?: {
+    conteudo?: string;
+    materiais_inclusos?: string;
+    objetivos?: string;
+    publico_alvo?: string;
+  }
   parcelas: number;
   preco_parcelado: number;
   imagem: string | null;
   categoria: number;
   categoria_nome: string;
+  categoria_slug: string;
+  tags: string[];
   tag: string;
   destaque: boolean;
 }

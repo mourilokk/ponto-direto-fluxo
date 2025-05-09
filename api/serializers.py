@@ -1,6 +1,8 @@
 
 from rest_framework import serializers
 from produtos.models import Categoria, Produto, DetalhesProduto
+from taggit.serializers import (TagListSerializerField, TaggitSerializer)
+
 
 class CategoriaSerializer(serializers.ModelSerializer):
     class Meta:
@@ -12,19 +14,23 @@ class DetalhesProdutoSerializer(serializers.ModelSerializer):
         model = DetalhesProduto
         exclude = ('produto',)
 
-class ProdutoListSerializer(serializers.ModelSerializer):
+class ProdutoListSerializer(serializers.ModelSerializer, TaggitSerializer):
     categoria_nome = serializers.ReadOnlyField(source='categoria.nome')
     preco_parcelado = serializers.DecimalField(max_digits=10, decimal_places=2, read_only=True)
-    
+    categoria_slug = serializers.ReadOnlyField(source='categoria.slug')
+    tags = TagListSerializerField()
+
     class Meta:
         model = Produto
         fields = ('id', 'titulo', 'slug', 'descricao_curta', 'preco', 'parcelas', 
-                  'preco_parcelado', 'imagem', 'categoria', 'categoria_nome', 'tag')
+                  'preco_parcelado', 'imagem', 'categoria', 'categoria_nome', 'tag', 
+                  'categoria_slug', 'tags')
 
-class ProdutoDetailSerializer(serializers.ModelSerializer):
+class ProdutoDetailSerializer(serializers.ModelSerializer, TaggitSerializer):
     categoria_nome = serializers.ReadOnlyField(source='categoria.nome')
     detalhes = DetalhesProdutoSerializer(read_only=True)
     preco_parcelado = serializers.DecimalField(max_digits=10, decimal_places=2, read_only=True)
+    tags = TagListSerializerField()
     
     class Meta:
         model = Produto

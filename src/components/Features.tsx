@@ -70,11 +70,10 @@ const Features = () => {
             </div>
             <div className="md:w-1/3 bg-white p-6 rounded-lg shadow-md">
               <div className="text-center mb-4">
-                <span className="text-4xl font-bold text-primary-500">Faça um teste</span>
-                <p className="text-sm text-gray-500 mt-1">para conteúdos básicos</p>
+                <span className="text-4xl font-bold text-primary-500">Conheça nossos materiais!</span>
               </div>
               <button className="w-full bg-primary-500 hover:bg-primary-600 text-white font-medium py-3 px-4 rounded-md transition-colors">
-                Começar Agora
+                Ver materiais
               </button>
             </div>
           </div>
