@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { ProdutoRelacionadoCard } from "./ProdutoRelacionadoCard";
+import { Button } from "../ui/button";
 
 interface Produto {
   id: number;
@@ -40,17 +41,23 @@ export const BoxRelacionados: React.FC<Props> = ({ produto, relacionados }) => {
       </div>
 
       {/* Coluna 2 - Compre também */}
-      <div className="w-full lg:w-1/2">
-        <h2 className="text-xl font-bold mb-4">Compre também:</h2>
-        <div className="grid grid-cols-2 gap-4">
-          {relacionados.map((item) => (
-            <ProdutoRelacionadoCard
-              key={item.id}
-              {...item}
-              selecionado={!!selecionados.find((p) => p.id === item.id)}
-              onToggle={() => toggleProduto(item)}
-            />
-          ))}
+        <div className="bg-white shadow-lg rounded-xl p-6">
+            <h2 className="text-lg font-bold mb-4">Compre também:</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+                {relacionados.map((relacionado) => (
+                    <ProdutoRelacionadoCard key={relacionado.id} produto={relacionado} />
+                ))}
+            </div>
+
+            <div className="mt-4 text-sm text-gray-700">
+                <p>
+                    Preço adicional: <s>R${Number(produto.preco_antigo).toFixed(2)}</s>{" "}
+                    <strong className="text-red-600">R${Number(produto.preco).toFixed(2)}</strong>
+                </p>
+                <Button className="mt-2 bg-orange-500 hover:bg-orange-600 text-white w-full font-semibold">
+                    Adicionar todas as ofertas em minha compra
+                </Button>
+            </div>
         </div>
 
         {selecionados.length > 0 && (
@@ -66,7 +73,6 @@ export const BoxRelacionados: React.FC<Props> = ({ produto, relacionados }) => {
             </button>
           </div>
         )}
-      </div>
     </div>
   );
 };

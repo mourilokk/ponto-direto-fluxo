@@ -77,15 +77,16 @@ const Resumos = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {produtos && produtos.map((produto) => (
               <Card key={produto.id} className="overflow-hidden flex flex-col h-full border-gray-200">
-                <div className="relative aspect-[4/5] bg-gray-100">
+                <div className="relative bg-white-100 aspect-[2/3] w-full max-h-[340px]">
                   {produto.imagem ? (
                     <img 
-                      src={`http://localhost:8000${produto.imagem}`}
+                      src={produto.imagem.startsWith('http') ? produto.imagem : `http://localhost:8000${produto.imagem}`} 
                       alt={produto.titulo}
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-contain p-0"
+                      onError={(e) => (e.currentTarget.style.display = "none")}
                     />
                   ) : (
-                    <div className="w-full h-full flex flex-col items-center justify-center p-4 bg-gray-800 text-white">
+                    <div className="w-full h-full flex flex-col items-center justify-center bg-gray-800 text-white">
                       <div className="font-bold text-xl text-center mb-4">RESUMO</div>
                       <div className="text-center text-sm">
                         {produto.titulo.split(' – ')[0].split(' ').slice(-3).join(' ')}
@@ -96,8 +97,9 @@ const Resumos = () => {
                     </div>
                   )}
                 </div>
+
                 <CardContent className="p-4 flex flex-col flex-grow">
-                  <h3 className="font-medium text-base mb-2 line-clamp-2">{produto.titulo}</h3>
+                  <h3 className="font-semibold text-sm mb-2 leading-tight line-clamp-2">{produto.titulo}</h3>
                   <div className="mt-auto pt-4">
                     <div className="text-primary-600 font-bold text-xl mb-1">
                       R${Number(produto.preco).toFixed(2).replace('.', ',')}

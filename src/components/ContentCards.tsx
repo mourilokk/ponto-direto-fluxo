@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import api from "@/services/api";
 import { Produto } from "@/types/produto";
+import { ProdutoCard } from "./produtos/ProdutoCard";
 
 interface ContentCardProps {
   produto: Produto;
@@ -11,17 +12,24 @@ interface ContentCardProps {
 
 const ContentCard = ({ produto }: ContentCardProps) => {
   return (
-    <div className="bg-white rounded-lg overflow-hidden shadow-sm border border-gray-100 card-effect">
-      <div className="h-48 bg-gray-200 relative">
+    <div className="overflow-hidden flex flex-col h-full border border-gray-200 rounded-lg bg-white">
+      <div className="relative bg-white aspect-[2/3] w-full max-h-[340px]">
         {produto.imagem ? (
           <img 
-            src={`http://localhost:8000${produto.imagem}`} 
+            src={produto.imagem.startsWith('http') ? produto.imagem : `http://localhost:8000${produto.imagem}`} 
             alt={produto.titulo} 
-            className="w-full h-full object-cover" 
+            className="w-full h-full object-contain p-0"
+            onError={(e) => (e.currentTarget.style.display = "none")}
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center bg-gradient-to-r from-primary-100 to-primary-200 text-primary-500">
-            Direto No Ponto
+          <div className="w-full h-full flex flex-col items-center justify-center bg-gray-800 text-white">
+            <div className="font-bold text-xl text-center mb-4">RESUMO</div>
+            <div className="text-center text-sm">
+              {produto.titulo.split(' - ')[0].split(' ').slice(-3).join(' ')}
+            </div>
+            <div className="absolute bottom-2 left-2 bg-blue-500 text-white text-xs py-1 px-2 rounded">
+              {produto.tag}
+            </div>
           </div>
         )}
         <div className="absolute top-3 left-3">
@@ -30,6 +38,7 @@ const ContentCard = ({ produto }: ContentCardProps) => {
           </span>
         </div>
       </div>
+      
       <div className="p-5">
         <h3 className="text-lg font-bold mb-2 line-clamp-2">{produto.titulo}</h3>
         <p className="text-gray-600 mb-4 text-sm line-clamp-3">{produto.descricao_curta || produto.descricao}</p>
@@ -100,11 +109,9 @@ const ContentCards = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
           {produtos.map((produto) => (
-            <Link to={`/produtos/${produto.slug}`} key={produto.id}>
-              <ContentCard produto={produto} />
-            </Link>
+            <ProdutoCard key={produto.id} produto={produto} onAddToCart={() => alert(`Produto ${produto.titulo} adicionado ao carrinho.`)} />
           ))}
         </div>
 
