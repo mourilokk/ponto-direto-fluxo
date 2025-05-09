@@ -37,7 +37,7 @@ const Navbar = () => {
           <div className="hidden md:flex md:items-center md:space-x-6 flex-1">
             <SearchBar />
             
-            <Link to="/area-alunos" className="text-gray-600 hover:text-primary-600 flex items-center">
+            <Link to="/area-do-aluno" className="text-gray-600 hover:text-primary-600 flex items-center">
               <User className="h-5 w-5 mr-1" />
               <span>Área de Alunos</span>
             </Link>
@@ -102,7 +102,7 @@ const Navbar = () => {
               <SearchBar />
             </div>
             <Link 
-              to="/area-alunos" 
+              to="/login" 
               className="block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-primary-500 hover:bg-gray-100"
             >
               Área de Alunos

@@ -2,6 +2,7 @@
 from rest_framework import serializers
 from produtos.models import Categoria, Produto, DetalhesProduto
 from taggit.serializers import (TagListSerializerField, TaggitSerializer)
+from django.contrib.auth.models import User
 
 
 class CategoriaSerializer(serializers.ModelSerializer):
@@ -35,3 +36,19 @@ class ProdutoDetailSerializer(serializers.ModelSerializer, TaggitSerializer):
     class Meta:
         model = Produto
         fields = '__all__'
+
+class RegisterSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True)
+
+    class Meta:
+        model = User
+        fields = ('username', 'email', 'password')
+
+    def create(self, validated_data):
+        user = User.objects.create_user(
+            username=validated_data['username'],
+            email=validated_data.get('email'),
+            password=validated_data['password']
+        )
+
+        return user

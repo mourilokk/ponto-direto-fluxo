@@ -1,7 +1,13 @@
 
-from rest_framework import viewsets, permissions
+from rest_framework import viewsets, permissions, status
 from produtos.models import Categoria, Produto
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework import generics
+from django.contrib.auth.models import User
 from .serializers import CategoriaSerializer, ProdutoListSerializer, ProdutoDetailSerializer
+from .serializers import RegisterSerializer
 
 class CategoriaViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Categoria.objects.all()
@@ -35,3 +41,26 @@ class ProdutoViewSet(viewsets.ReadOnlyModelViewSet):
             queryset = queryset.filter(destaque=destaque_bool)
             
         return queryset
+
+class RegisterView(generics.CreateAPIView):
+
+    queryset = User.objects.all()
+    serializer_class = RegisterSerializer
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        serializer = RegisterSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'message': 'Usuário registrado com sucesso'}, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class MinhaContaView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+        return Response({
+            'username': user.username,
+            'email': user.email,
+        })   
