@@ -35,6 +35,7 @@ class Produto(models.Model):
     descricao = models.TextField()
     descricao_curta = models.TextField(blank=True, null=True)
     preco = models.DecimalField(max_digits=10, decimal_places=2)
+    preco_antigo = models.DecimalField(max_digits=10, decimal_places= 2, null=True, blank=True)
     parcelas = models.IntegerField(default=12)
     imagem = models.ImageField(upload_to='produtos/', blank=True, null=True)
     categoria = models.ForeignKey(Categoria, on_delete=models.CASCADE, related_name='produtos')

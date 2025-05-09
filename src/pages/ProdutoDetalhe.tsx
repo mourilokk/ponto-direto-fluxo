@@ -6,7 +6,8 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import api from "@/services/api";
-import { ProdutoDetalhado } from "@/types/produto";
+import { Produto, ProdutoDetalhado } from "@/types/produto";
+import { BoxRelacionados } from "@/components/relacionados/BoxRelacionados";
 
 const ProdutoDetalhe = () => {
   const { slug } = useParams();
@@ -19,15 +20,20 @@ const ProdutoDetalhe = () => {
     }
   });
 
-  const { data: relacionados } = useQuery({
-    queryKey: ["relacionados", produto?.tags],
+  const { data: relacionados } = useQuery<Produto[]>({
+    queryKey: ["relacionados", produto?.id],
     enabled: !!produto?.tags?.length,
     queryFn: async () => {
+      const tagNames = produto.tags.map((tag: any) => 
+        typeof tag === "string" ? tag: tag.name
+      );
+      
       const res = await api.get("/produtos/", {
-        params: { categoria: produto.tags.join(",") }
+        params: { tags: tagNames.join(",")},
       });
+      
       return res.data.filter((p: any) => p.slug !== produto.slug);
-    }
+    },
   });
 
   if (isLoading) return <p className="text-center mt-20">Carregando...</p>;
@@ -37,8 +43,8 @@ const ProdutoDetalhe = () => {
     <div className="min-h-screen flex flex-col bg-white">
       <Navbar />
 
-      <main className="pt-24 px-4 md:px-8 max-w-6xl mx-auto">
-
+      <main className="flex-grow pt-24 px-4 md:px-8 max-w-6xl mx-auto">
+      
         {/* Banner CTA */}
         <div className="bg-blue-100 border border-blue-300 rounded-lg p-4 flex flex-col sm:flex-row justify-between items-center mb-10">
           <span className="text-blue-800 font-semibold text-base text-center sm:text-left">
@@ -155,24 +161,24 @@ const ProdutoDetalhe = () => {
         </section>
 
         {/* Compre também */}
-        {relacionados?.length > 0 && (
-          <section className="mt-16">
-            <h2 className="text-2xl font-bold mb-4">Compre também:</h2>
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
-              {relacionados.map((rel) => (
-                <Link to={`/produtos/${rel.slug}`} key={rel.id} className="border rounded-md p-4 hover:shadow-sm">
-                  <p className="font-semibold text-sm line-clamp-2">{rel.titulo}</p>
-                  <p className="text-green-600 font-bold text-sm mt-1">
-                    R${Number(rel.preco).toFixed(2).replace('.', ',')}
-                  </p>
-                </Link>
-              ))}
-            </div>
-
-            <Button className="bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 px-6 mt-6 mx-auto block">
-              Adicionar todas as ofertas em minha compra
-            </Button>
-          </section>
+        {relacionados && relacionados.length > 0 && (
+          <BoxRelacionados
+            produto={{
+              id: produto.id,
+              titulo: produto.titulo,
+              imagem: produto.imagem || "",
+              preco: produto.preco,
+              preco_antigo: produto.preco_antigo,
+              descricao: produto.descricao
+            }}
+            relacionados={relacionados.map(r => ({
+              id: r.id,
+              titulo: r.titulo,
+              imagem: r.imagem || "",
+              preco: r.preco,
+              preco_antigo: r.preco_antigo
+            }))}
+          />
         )}
       </main>
 

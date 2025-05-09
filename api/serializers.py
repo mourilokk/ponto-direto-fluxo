@@ -22,16 +22,16 @@ class ProdutoListSerializer(serializers.ModelSerializer, TaggitSerializer):
 
     class Meta:
         model = Produto
-        fields = ('id', 'titulo', 'slug', 'descricao_curta', 'preco', 'parcelas', 
-                  'preco_parcelado', 'imagem', 'categoria', 'categoria_nome', 'tag', 
-                  'categoria_slug', 'tags')
+        fields = ('id', 'titulo', 'slug', 'descricao', 'descricao_curta', 'preco', 
+                  'parcelas', 'preco_parcelado', 'preco_antigo', 'imagem', 'categoria', 
+                  'categoria_nome', 'tag', 'categoria_slug', 'tags', 'detalhes')
 
 class ProdutoDetailSerializer(serializers.ModelSerializer, TaggitSerializer):
     categoria_nome = serializers.ReadOnlyField(source='categoria.nome')
     detalhes = DetalhesProdutoSerializer(read_only=True)
     preco_parcelado = serializers.DecimalField(max_digits=10, decimal_places=2, read_only=True)
     tags = TagListSerializerField()
-    
+
     class Meta:
         model = Produto
         fields = '__all__'
