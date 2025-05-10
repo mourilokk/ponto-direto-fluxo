@@ -56,7 +56,7 @@ MIDDLEWARE = [
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "http://localhost:8080",
-    "https://ponto-direto.vercel.app",
+    "https://ponto-direto-fluxo.vercel.app",
 ]
 
 CORS_ALLOW_CREDENTIALS = True
