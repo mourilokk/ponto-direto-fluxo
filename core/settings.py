@@ -18,7 +18,7 @@ SECRET_KEY = config('SECRET_KEY', default='chave-secreta')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', default=False, cast=bool)
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ["ponto-direto-fluxo-production.up.railway.app"]
 
 
 # Application definition
@@ -56,6 +56,8 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "http://localhost:8080",
 ]
+
+CRSF_TRUSTED_ORIGINS = [os.environ.get("CRSF_TRUSTED_ORIGIN")]
 
 ROOT_URLCONF = 'core.urls'
 
@@ -122,7 +124,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = 'static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 # Media files (uploads)
 MEDIA_URL = '/media/'
@@ -148,3 +150,6 @@ if 'collectstatic' in sys.argv:
     DEBUG = False
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
