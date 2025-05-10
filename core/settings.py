@@ -57,7 +57,7 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:8080",
 ]
 
-CSRF_TRUSTED_ORIGINS = [os.environ.get("CSRF_TRUSTED_ORIGIN")]
+CSRF_TRUSTED_ORIGINS = os.getenv("CSRF_TRUSTED_ORIGINS", "").split(",")
 
 ROOT_URLCONF = 'core.urls'
 
