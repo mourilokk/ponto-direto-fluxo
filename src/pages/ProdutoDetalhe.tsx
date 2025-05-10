@@ -187,29 +187,29 @@ const ProdutoDetalhe = () => {
           <div className="mt-12">
             <h2 className="text-2xl font-bold mb-4">Sobre o material</h2>
             <div className="bg-white p-6 rounded-lg border border-gray-200">
-              <p className="text-gray-700">{produto.descricao}</p>
+              <p className="text-gray-800 whitespace-pre-line">{produto.descricao}</p>
               {produto.detalhes?.conteudo && (
                 <div className="mt-6">
                   <h3 className="text-xl font-bold mb-2">Conteúdo</h3>
-                  <div className="text-gray-700" dangerouslySetInnerHTML={{ __html: produto.detalhes.conteudo }}></div>
+                  <div className="text-gray-700 whitespace-pre-line" dangerouslySetInnerHTML={{ __html: produto.detalhes.conteudo }}></div>
                 </div>
               )}
               {produto.detalhes?.materiais_inclusos && (
                 <div className="mt-6">
                   <h3 className="text-xl font-bold mb-2">Materiais Inclusos</h3>
-                  <div className="text-gray-700" dangerouslySetInnerHTML={{ __html: produto.detalhes.materiais_inclusos }}></div>
+                  <div className="text-gray-700 whitespace-pre-line" dangerouslySetInnerHTML={{ __html: produto.detalhes.materiais_inclusos }}></div>
                 </div>
               )}
               {produto.detalhes?.objetivos && (
                 <div className="mt-6">
                   <h3 className="text-xl font-bold mb-2">Objetivos</h3>
-                  <div className="text-gray-700" dangerouslySetInnerHTML={{ __html: produto.detalhes.objetivos }}></div>
+                  <div className="text-gray-700 whitespace-pre-line" dangerouslySetInnerHTML={{ __html: produto.detalhes.objetivos }}></div>
                 </div>
               )}
               {produto.detalhes?.publico_alvo && (
                 <div className="mt-6">
                   <h3 className="text-xl font-bold mb-2">Público Alvo</h3>
-                  <div className="text-gray-700" dangerouslySetInnerHTML={{ __html: produto.detalhes.publico_alvo }}></div>
+                  <div className="text-gray-700 whitespace-pre-line" dangerouslySetInnerHTML={{ __html: produto.detalhes.publico_alvo }}></div>
                 </div>
               )}
             </div>
