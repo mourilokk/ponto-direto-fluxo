@@ -12,6 +12,7 @@ import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Resumos from "./pages/Resumos";
 import ProdutoDetalhe from "./pages/ProdutoDetalhe";
+import { CartProvider } from "./context/CartContext";
 
 const queryClient = new QueryClient();
 
@@ -23,28 +24,30 @@ const PrivateRoute = ({ children }: { children: JSX.Element }) => {
 const App = () => (
   <AuthProvider>
     <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/materiais/resumos" element={<Resumos />} />
-            <Route path="/produtos/:slug" element={<ProdutoDetalhe />} />
-            <Route path="/login" element={<Login />} />
-            <Route 
-              path="/area-do-aluno"
-              element={
-                <PrivateRoute>
-                  <AreaDoAluno />
-                </PrivateRoute>
-              }
-            />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
-      </TooltipProvider>
+      <CartProvider>  
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/materiais/resumos" element={<Resumos />} />
+              <Route path="/produtos/:slug" element={<ProdutoDetalhe />} />
+              <Route path="/login" element={<Login />} />
+              <Route 
+                path="/area-do-aluno"
+                element={
+                  <PrivateRoute>
+                    <AreaDoAluno />
+                  </PrivateRoute>
+                }
+              />
+              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </BrowserRouter>
+        </TooltipProvider>
+      </CartProvider>
     </QueryClientProvider>
 </AuthProvider>
 );

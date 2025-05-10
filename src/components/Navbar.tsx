@@ -1,7 +1,7 @@
 
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Menu, X, ShoppingCart, ChevronDown, User } from 'lucide-react';
+import { Menu, X, ShoppingCart, ChevronDown, User, Car } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import SearchBar from './SearchBar';
 import {
@@ -11,9 +11,13 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
+import { useCart } from '@/context/CartContext';
+import { CartDrawer } from './cart/CartDrawer';
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { getQuantity } = useCart();
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -72,12 +76,14 @@ const Navbar = () => {
               </NavigationMenuList>
             </NavigationMenu>
 
-            <Link to="/carrinho" className="text-gray-600 hover:text-primary-600 relative">
-              <ShoppingCart className="h-6 w-6" />
-              <span className="absolute -top-2 -right-2 bg-primary-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                0
-              </span>
-            </Link>
+            <button onClick={() => setIsDrawerOpen(true)} className='relative'>
+              <ShoppingCart className="w-6 h-6" />
+              {getQuantity() > 0 && (
+                <span className="absolute -top-2 -right-2 text-xs bg-red-600 text-white w-5 h-5 rounded-full flex items-center justify-center">
+                  {getQuantity()}
+                </span>
+              )}
+            </button>
           </div>
 
           {/* Mobile menu button */}
@@ -139,6 +145,7 @@ const Navbar = () => {
           </div>
         </div>
       )}
+      <CartDrawer isOpen={isDrawerOpen} onClose={() => setIsDrawerOpen(false)} />
     </nav>
   );
 };

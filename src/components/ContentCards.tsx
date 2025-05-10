@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import api from "@/services/api";
 import { Produto } from "@/types/produto";
 import { ProdutoCard } from "./produtos/ProdutoCard";
+import { useCart } from "@/context/CartContext";
 
 interface ContentCardProps {
   produto: Produto;
@@ -61,6 +62,7 @@ const ContentCard = ({ produto }: ContentCardProps) => {
 };
 
 const ContentCards = () => {
+  const {addToCart} = useCart();
   const { data: produtos, isLoading, error } = useQuery({
     queryKey: ['produtos', 'destaque'],
     queryFn: async () => {
@@ -111,7 +113,7 @@ const ContentCards = () => {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
           {produtos.map((produto) => (
-            <ProdutoCard key={produto.id} produto={produto} onAddToCart={() => alert(`Produto ${produto.titulo} adicionado ao carrinho.`)} />
+            <ProdutoCard key={produto.id} produto={produto} onAddToCart={() => addToCart(produto)} />
           ))}
         </div>
 
