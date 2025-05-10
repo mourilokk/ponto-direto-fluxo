@@ -101,7 +101,7 @@ const ProdutoDetalhe = () => {
                       src={produto.imagem?.startsWith("http") ? produto.imagem : `http://localhost:8000${produto.imagem}`}
                       alt={produto.titulo}
                       className="object-contain h-full w-full"
-                      onError={(e) => {e.currentTarget.src = "/placeholder.png";}}
+                      onError={(e) => {e.currentTarget.src;}}
                     />
                   </div>
                 ) : (
