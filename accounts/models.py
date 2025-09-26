@@ -29,6 +29,7 @@ class Profile(models.Model):
         blank=True
     )
 
+    cpf = models.CharField(max_length=14, blank=True, null=True, verbose_name="CPF")
     telefone = models.CharField(max_length=20, blank=True, null=True, verbose_name="Número de Telefone")
     formacao = models.CharField(max_length=100, blank=True, null=True,  verbose_name="Formação Acadêmica")
     concurso_desejado = models.CharField(max_length=200, blank=True, null=True, verbose_name="Concurso Desejado")

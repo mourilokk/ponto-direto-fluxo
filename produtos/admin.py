@@ -45,7 +45,7 @@ class ProdutoAdmin(admin.ModelAdmin):
 
     fieldsets = (
         ('Informações Básicas', {
-            'fields': ('titulo', 'slug', 'categorias', 'concurso', 'tag', 'destaque', 'tags', 'tipo')
+            'fields': ('titulo', 'slug', 'categorias', 'concurso', 'tag', 'destaque', 'tags', 'tipo', 'ncm')
         }),
         ('Descrição', {
             'fields': ('descricao_curta', 'descricao')

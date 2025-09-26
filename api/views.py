@@ -7,7 +7,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework import generics, status
 from django.contrib.auth.models import User
-from .serializers import CategoriaSerializer, ProdutoListSerializer, ProdutoDetailSerializer, RegisterSerializer, CustomTokenObtainPairSerializer, PedidoSerializer
+from .serializers import CategoriaSerializer, ProdutoListSerializer, ProdutoDetailSerializer, RegisterSerializer, CustomTokenObtainPairSerializer, PedidoSerializer, ProdutoCreateSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
@@ -20,7 +20,7 @@ from decimal import Decimal
 import json, requests, os # type: ignore
 from django.db.models import Q
 from django.conf import settings
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from google.oauth2 import id_token #type: ignore
 from google.auth.transport import requests as google_requests #type: ignore
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -30,6 +30,8 @@ from accounts.models import Profile
 from django_filters.rest_framework import CharFilter, FilterSet #type: ignore
 from rest_framework import filters
 from django.db import connection
+from decouple import config
+from pedidos.models import Pedido
 
 class CategoriaViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Categoria.objects.all()
@@ -54,15 +56,16 @@ class ProdutoFilter(FilterSet):
             Q(categorias__nome__icontains=value)
         ).distinct()
 
-class ProdutoViewSet(viewsets.ReadOnlyModelViewSet):
+class ProdutoViewSet(viewsets.ModelViewSet):
     queryset = Produto.objects.filter(ativo=True).prefetch_related('categorias')
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [permissions.AllowAny] # Mantenha AllowAny para o teste
     lookup_field = 'slug'
-
     filterset_class = ProdutoFilter
     ordering_fields = ['data_criacao', 'preco', 'titulo']
 
     def get_serializer_class(self):
+        if self.action == 'create':
+            return ProdutoCreateSerializer
         if self.action == 'retrieve':
             return ProdutoDetailSerializer
         return ProdutoListSerializer
@@ -233,7 +236,8 @@ def reenviar_confirmacao(request):
         
         uid = urlsafe_base64_encode(force_bytes(user.pk))
         token = account_activation_token.make_token(user)
-        activation_link = f"http://localhost:8000/api/activate/{uid}/{token}/"
+        frontend_url = config('FRONTEND_URL')
+        activation_link = f"{frontend_url}/api/activate/{uid}/{token}/"
 
         email_subject = "Ative sua conta no Direto no Ponto"
         email_body = f"Olá {user.username}, \n\n Clique no link abaixo para ativar sua conta: \n{activation_link}"
@@ -244,93 +248,43 @@ def reenviar_confirmacao(request):
         return Response({"message": "E-mail de ativação reenviado com sucesso!"})
     except User.DoesNotExist:
         return Response({"error": "Usuário não encontrado."}, status=404)
-
-"""
-@api_view(['GET'])
-@permission_classes([AllowAny])
-def google_auth_start_view(request):
-
-    auth_params = {
-        'client_id': settings.GOOGLE_OAUTH2_CLIENT_ID,
-        'redirect_uri': 'http://localhost:8000/api/auth/google/callback/',
-        'response_type': 'code',
-        'scope': 'openid profile email',
-        'access_type': 'offline'
-    }
-    google_auth_url = 'https://accounts.google.com/o/oauth2/v2/auth?' + urlencode(auth_params)
-
-    return HttpResponseRedirect(google_auth_url)
-
-@api_view(['GET'])
-@permission_classes([AllowAny])
-def google_auth_callback_view(request):
     
-    auth_code = request.GET.get('code')
-    if not auth_code:
-        return HttpResponseRedirect('http://localhost:8080/login?error=google_auth_failed')
-    
-    try:
-        token_url = "https://oauth2.googleapis.com/token"
-        '''
-        client_id_debug = settings.GOOGLE_OAUTH2_CLIENT_ID
-        client_secret_debug = settings.GOOGLE_OAUTH2_CLIENT_SECRET
+@csrf_exempt
+def nfeio_webhook_view(request):
+    if request.method == 'POST':
+        if not request.body:
+            return HttpResponse(status=200)
         
-        print("--- DEBUG GOOGLE AUTH ---")
-        print(f"Client ID: {client_id_debug}")
-        print(f"Client Secret: {client_secret_debug}... (escondido por segurança)") # Mostra só o início
-        print(f"Auth Code: {auth_code}")
-        print("-------------------------")
-        '''
-        data = {
-            'code': auth_code,
-            'client_id': settings.GOOGLE_OAUTH2_CLIENT_ID,
-            'client_secret': settings.GOOGLE_OAUTH2_CLIENT_SECRET,
-            'redirect_uri': 'http://localhost:8000/api/auth/google/callback/',
-            'grant_type': 'authorization_code'
-        }
-        response = requests.post(token_url, data=data)
-        response.raise_for_status()
-        token_data = response.json()
-
-        id_info = id_token.verify_oauth2_token(
-            token_data['id_token'], google_requests.Request(), settings.GOOGLE_OAUTH2_CLIENT_ID
-        )
-
-        email = id_info.get('email')
-        nome = id_info.get('given_name', email.split('@')[0])
-        sobrenome = id_info.get('family_name', '')
-
         try:
-            user = User.objects.get(email=email)
-            print(f"Usuário encontrado com e-mail {email}. Realizando login.")
+            data = json.loads(request.body)
+            evento = data.get('event')
+            print("--- Webhook NFE recebido")
+            print(json.dumps(data, indent=2))
 
-            if not user.is_active:
-                user.is_active=True
-                user.save()
-        except User.DoesNotExist:
-            print(f"Nenhum usuário encontrado com e-mail {email}. Criando nova conta.")
-            user=User.objects.create_user(
-                username=email,
-                email=email,
-                first_name=nome,
-                last_name=sobrenome,
-                is_active=True
-            )
+            if data.get('status') == 'Issued':
+                numero_pedido = data.get('number')
+                try:
+                    pedido = Pedido.objects.get(id=int(numero_pedido))
 
-            user.set_unusable_password()
-            user.save()
-        
-        refresh = RefreshToken.for_user(user)
-        access_token = str(refresh.access_token)
-        refresh_token = str(refresh)
+                    pedido.nfe_id = data.get('id')
+                    pedido.nfe_status = data.get('status')
+                    pedido.nfe_pdf_url = data.get('pdf')
+                    pedido.nfe_xml_url = data.get('xml')
+                    pedido.save()
 
-        redirect_url = f'http://localhost:8080/auth/callback?access_token={access_token}&refresh_token={refresh_token}'
-        return HttpResponseRedirect(redirect_to=redirect_url)
-    
-    except Exception as e:
-        traceback.print_exc()
-        return HttpResponseRedirect('http://localhost:8080/login?error=google_auth_failed')
-"""
+                    print(f"Pedido {pedido.id} atualizado com os dados da NF-e.")
+
+                       # TODO:
+                
+                except Pedido.DoesNotExist:
+                    print(f"Erro: Pedido com id {pedido.id} não encontrado.")
+                
+            return HttpResponse(status=200)
+                
+        except json.JSONDecodeError:
+            return HttpResponse("Invalid JSON", status=400)
+
+    return HttpResponse("Método não permitido", status=405) 
 
 @api_view(['POST'])
 @permission_classes([AllowAny])

@@ -29,60 +29,32 @@ class Categoria(models.Model):
         ordering = ['nome']
 
 class Produto(models.Model):
-    TAGS_CHOICES = [
-        ('Regular', 'Regular'),
-        ('Pós-Edital', 'Pós-Edital'),
-        ('Pré-Edital', 'Pré-Edital'),
-        ('Curso', 'Curso'),
-        ('Destaque', 'Destaque'),
-        ('Novidade', 'Novidade'),
-    ]
-
-    CATEGORIAS = [
-        ("ED", "Educação"),
-        ("JUR", "Jurídico"),
-        ("ADM", "Administrativo"),
-        ("TEC", "Técnico"),
-        ("FISC", "Fiscal"),
-        ("CON", "Controle"),
-        ("TI", "Tecnologia da Informação"),
-    ]
-
-    TIPOS = [
-        ('resumo', 'Resumo'),
-        ('combo', 'Combo'),
-        ('flashcard', 'Flashcard'),
-        ('mapas', 'Mapas'),
-        ('recurso', 'Recurso'),
-    ]
+    TAGS_CHOICES = [('Regular', 'Regular'), ('Pós-Edital', 'Pós-Edital'), ('Pré-Edital', 'Pré-Edital'), ('Curso', 'Curso'), ('Destaque', 'Destaque'), ('Novidade', 'Novidade')]
+    TIPOS = [('resumo', 'Resumo'), ('combo', 'Combo'), ('flashcard', 'Flashcard'), ('mapas', 'Mapas'), ('recurso', 'Recurso')]
     
-    # Campos principais
-    codigo = models.CharField(max_length=50, unique=True, blank=True, null=True, editable=False)
     titulo = models.CharField(max_length=255)
-    slug = models.SlugField(max_length=255, unique=True, blank=True)
-    descricao = models.TextField()
-    descricao_curta = models.TextField(blank=True, null=True)
+    slug = models.SlugField(unique=True, blank=True)
+    codigo = models.CharField(max_length=30, unique=True, blank=True, null=True, editable=False)
     preco = models.DecimalField(max_digits=10, decimal_places=2)
     preco_antigo = models.DecimalField(max_digits=10, decimal_places= 2, null=True, blank=True)
     parcelas = models.IntegerField(default=12)
+    descricao = models.TextField()
+    descricao_curta = models.TextField(blank=True, null=True)
     imagem = models.ImageField(upload_to='produtos/capas/', blank=True, null=True)
     amostra = models.FileField(upload_to="produtos/amostras/", null=True, blank=True)
     arquivo_produto = models.FileField(upload_to='produtos/completos/', null=True, blank=True, verbose_name="Arquivo do Produto Completo")
-
-    # Classificação
     categorias = models.ManyToManyField(Categoria, related_name='produtos', blank=True)
     tipo = models.CharField(max_length=20, choices=TIPOS, default='resumo')
     concurso = models.CharField(max_length=20)
     tag = models.CharField(max_length=20, choices=TAGS_CHOICES, default='Regular')
     tags = TaggableManager(blank=True)
-
-    is_combo = models.BooleanField(default=False)
-    produtos_inclusos = models.ManyToManyField("self", blank=True, symmetrical=False, related_name="incluindo_em")
-
-    destaque = models.BooleanField(default=False)
+    ncm = models.CharField(max_length=8, blank=True, null=True, verbose_name="Código NCM", help_text="Ex: 49019900 para livros/e-books. Consulte sua contabilidade.")
     ativo = models.BooleanField(default=True, verbose_name="Produto Ativo?")
+    destaque = models.BooleanField(default=False)
+    is_combo = models.BooleanField(default=False)
     data_criacao = models.DateTimeField(auto_now_add=True)
     data_atualizacao = models.DateTimeField(auto_now=True)
+    produtos_inclusos = models.ManyToManyField("self", blank=True, symmetrical=False, related_name="incluindo_em")
     
     def preco_parcelado(self):
         return self.preco / self.parcelas
@@ -90,8 +62,12 @@ class Produto(models.Model):
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(self.titulo)
-        
         super().save(*args, **kwargs)
+        if not self.codigo and self.categorias.exists():
+            primeira_categoria = self.categorias.first()
+            if primeira_categoria:
+                self.codigo = gerar_codigo_produto(primeira_categoria.sigla, self.concurso)
+                super().save(update_fields=['codigo'])
     
     def __str__(self):
         return f"{self.titulo} ({self.codigo or 'Sem código'})"
@@ -99,7 +75,7 @@ class Produto(models.Model):
     class Meta:
         verbose_name = 'Produto'
         verbose_name_plural = 'Produtos'
-        ordering = ['-data_criacao']
+        ordering = ['-data_atualizacao']
     
 class DetalhesProduto(models.Model):
     produto = models.OneToOneField(Produto, on_delete=models.CASCADE, related_name='detalhes')

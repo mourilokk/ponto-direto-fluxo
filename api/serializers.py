@@ -189,3 +189,24 @@ class AprovadoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Aprovado
         fields = ["id", "nome", "cargo", "foto", "link_externo"]
+
+class ProdutoCreateSerializer(serializers.ModelSerializer):
+    categorias = serializers.PrimaryKeyRelatedField(
+        queryset=Categoria.objects.all(),
+        many=True
+    )
+
+    class Meta:
+        model = Produto
+        fields = [
+            'titulo',
+            'descricao',
+            'descricao_curta',
+            'preco',
+            'parcelas',
+            'ncm',
+            'tipo',
+            'concurso',
+            'tag',
+            'categorias',
+        ]

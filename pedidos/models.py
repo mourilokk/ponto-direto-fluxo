@@ -30,6 +30,10 @@ class Pedido(models.Model):
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pendente')
     criado_em = models.DateTimeField(auto_now_add=True)
     codigo = models.CharField(max_length=100, unique=True, blank=True, null=True)
+    nfe_id = models.CharField(max_length=255, blank=True, null=True, verbose_name="ID da NF-e na NFE.io")
+    nfe_status = models.CharField(max_length=20, blank=True, null=True, verbose_name="Status da NF-e")
+    nfe_pdf_url = models.URLField(blank=True, null=True, verbose_name="Link para o PDF da NF-e")
+    nfe_xml_url = models.URLField(blank=True, null=True, verbose_name="Link para o XML da NF-e")
 
     def __str__(self):
         return f"Pedido #{self.id} - {self.usuario.username} - R$ {self.total:.2f}"

@@ -4,7 +4,7 @@ from rest_framework.routers import DefaultRouter
 from .views import (CategoriaViewSet, ProdutoViewSet, RegisterView, 
                     MinhaContaView, CustomTokenObtainPairView, ActivationAccountView,
                     verificar_cupom, CriarPedidoView, reenviar_confirmacao, 
-                    google_login_view)
+                    google_login_view, nfeio_webhook_view)
 from aprovados.views import AprovadoViewSet
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from pedidos.views import checkout_link, pagarme_webhook, MeusMateriaisView, VerificarStatusPedidoView
@@ -42,6 +42,7 @@ urlpatterns = [
     path('pedidos/<int:pedido_id>/status/', VerificarStatusPedidoView.as_view(), name='verificar_status_pedido'),
     path('auth/google/', google_login_view, name='google_login_view'),
     path('accounts/profile/', UserProfileView.as_view(), name='user_profile'),
+    path('webhook/nfeio/', nfeio_webhook_view, name='webhook-nfeio'),
 ]
 
 urlpatterns += static('/amostra/', document_root=os.path.join(settings.MEDIA_ROOT, 'amostras'))
