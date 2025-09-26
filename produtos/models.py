@@ -101,7 +101,7 @@ class Cupom(models.Model):
         verbose_name = "Cupom"
         verbose_name_plural = "Cupons"
 
-    codigo = models.CharField(max_length=50, unique=True)
+    codigo = models.CharField(max_length=100, unique=True)
     tipo = models.CharField(max_length=10, choices=TIPO_CHOICES)
     valor = models.DecimalField(max_digits=10, decimal_places=2)
     ativo = models.BooleanField(default=True)
